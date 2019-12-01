@@ -4,7 +4,8 @@
 #include <glib.h>
 #include "../include/libstemmer.h"
 
-#define COMP 0.9
+/* to change thresh hold, change this value*/
+#define COMP 0.999
 
 void readModel(FILE *f, GHashTable * counter){
     char * line = 0x0 ;
