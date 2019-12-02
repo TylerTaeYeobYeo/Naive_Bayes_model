@@ -8,47 +8,35 @@
 #define NON_NEGATIVE 5565
 
 FILE * model;
+GHashTable * stop; //stopwords
 
 void print_csv (gpointer key, gpointer value, gpointer userdata) 
 {
 	char * t = key ;
 	int * d = value ;
-    fprintf(model,"%s %lf %lf\n", t, (double)d[0]/NEGATIVE, (double)d[1]/NON_NEGATIVE);
+    fprintf(model,"%s %0.32lf %0.32lf\n", t, (double)d[0]/NEGATIVE, (double)d[1]/NON_NEGATIVE);
 	// printf("%s %lf %lf\n", t, (double)d[0]/Negative, (double)d[1]/nonNegative) ;
 }
 
 int check(const char *s){
     //hashtags
-    switch(s[0]){
-        case '#': case'@': return 0; break;
-        default:break;
+    int * d ;			
+    d = g_hash_table_lookup(stop, s);
+    if(d==NULL) return 1;
+    return 0;
+}
+
+void SWDictionary(GHashTable * dic){
+    FILE *fp = fopen("../lib/stopwords","r");
+    char buf[64] = "";
+    while(!feof(fp)){
+        fscanf(fp,"%s",buf);
+        if(buf[0]=='#') continue;
+        int *d = malloc(sizeof(short));
+        *d = 1;
+        g_hash_table_insert(dic,strdup(buf),d);
     }
-    //stopwords
-    //article
-    if(strcmp(s,"a")==0) return 0;
-    if(strcmp(s,"an")==0) return 0;
-    if(strcmp(s,"the")==0) return 0;
-    // //article
-    // case "a":
-    // case "an":
-    // case "the":
-    // //pronouns
-    // case "i": case "my": case "mine":
-    // case "you": case "your": case "yours":
-    // case "he": case "his": case "him":
-    // case "she": case "her": case "her":
-    // case "they": case "their": case "them":
-    // case "we": case "our": case "us":
-    // case "it": case "its":
-    // //prepositions
-    // case "to": case "at": case "on": case "upon": 
-    // case "over": case "under": case "above": case "with":
-    // case "in": case "into": case "by": case "for": case "of": 
-    // case "since": case "from":
-    // //verbs
-    // case "was": case "were": case "am": case "are": case "is": case "did":
-    //     return 0;
-    return 1;
+    fclose(fp);
 }
 
 void read(FILE *f, GHashTable * counter, int index){
@@ -105,8 +93,10 @@ void read(FILE *f, GHashTable * counter, int index){
 
 int main () 
 {
-
 	GHashTable * counter = g_hash_table_new(g_str_hash, g_str_equal) ;
+    stop = g_hash_table_new(g_str_hash, g_str_equal);
+
+    SWDictionary(stop);
 
 	char * line = 0x0 ;
 	// size_t r ; 
