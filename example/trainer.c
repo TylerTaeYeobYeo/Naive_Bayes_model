@@ -4,6 +4,10 @@
 #include <glib.h>
 #include "../include/libstemmer.h"
 
+/* Sorry, this values are hard coded for cpu efficiency.
+ * With other train datas, the defined values should be different.
+ * this values express the size of the train cases for each neagative and non-negative cases.
+ */
 #define NEGATIVE 9078
 #define NON_NEGATIVE 5565
 
@@ -18,6 +22,7 @@ void print_csv (gpointer key, gpointer value, gpointer userdata)
 	// printf("%s %lf %lf\n", t, (double)d[0]/Negative, (double)d[1]/nonNegative) ;
 }
 
+/* look-up stop dictionary for unnecessary words*/
 int check(const char *s){
     //hashtags
     int * d ;			
@@ -26,6 +31,7 @@ int check(const char *s){
     return 0;
 }
 
+/* initialize stopword dictionary */
 void SWDictionary(GHashTable * dic){
     FILE *fp = fopen("../lib/stopwords","r");
     char buf[64] = "";
@@ -39,18 +45,19 @@ void SWDictionary(GHashTable * dic){
     fclose(fp);
 }
 
+/* Reads the data file and trains the model.
+ * trains sets can be distinguished by the 'index' at the last paramenter
+ * @param FILE *f: give data file opened by fopen with reading mode.
+ * @param GHashTable *counter: give the hash table which will be trained.
+ * @param int index: put 0 for negative, 1 for non-negative data-set
+ */
 void read(FILE *f, GHashTable * counter, int index){
     char * line = 0x0 ;
-	// size_t r ; 
 	size_t n = 0;
-
-    struct sb_stemmer * stemmer ;
-
-	stemmer = sb_stemmer_new("english", 0x0) ;
+    struct sb_stemmer * stemmer = sb_stemmer_new("english", 0x0) ;
 
     while (getline(&line, &n, f) >= 0) {
 		char * t ;
-		char * _line = line ;
 		for (t = strtok(line, " \n\t"); t != 0x0 ; t = strtok(0x0, " \n\t")) { 
             int src = 0, dest = 0;
             //lowercase && remove special chars
@@ -63,14 +70,15 @@ void read(FILE *f, GHashTable * counter, int index){
             }
             t[dest] = '\0';
             const char *s = sb_stemmer_stem(stemmer, t, strlen(t));
-            // printf("%s %s\n",t,s);
-            //remove stopwords
-            if(strlen(s)>0 && check(s)){
+
+            //add to hash when it is necessary
+            if(strlen(s)>0 && check(s)){ //conditions: length>0 && stopwords
                 int * d ;			
                 d = g_hash_table_lookup(counter, s) ;
                 if (d == NULL) {
+                    /* When smoothing, this is where you should MANIPULATE */
                     d = malloc(sizeof(int)*2) ;
-                    if(index){
+                    if(index){ 
                         d[0] = 0;
                         d[1] = 1;
                     }
@@ -85,38 +93,32 @@ void read(FILE *f, GHashTable * counter, int index){
                 }
             }
 		}
-		free(_line) ;
-		line = 0x0 ;
+		line = 0x0;
 	}
 	sb_stemmer_delete(stemmer) ;
 }
 
 int main () 
 {
+    /* Hash Initialization */
 	GHashTable * counter = g_hash_table_new(g_str_hash, g_str_equal) ;
     stop = g_hash_table_new(g_str_hash, g_str_equal);
-
-    SWDictionary(stop);
-
-	char * line = 0x0 ;
-	// size_t r ; 
-	size_t n = 0 ;
+    SWDictionary(stop); //dictionary for stopwords initialized.
 	
-    //negative case
+    //negative cases
     FILE * f = fopen("../data/train.negative.csv", "r") ;
 	read(f,counter,0);
 	fclose(f) ;
 
-    //non negative case
+    //non-negative cases
     f = fopen("../data/train.non-negative.csv", "r");
     read(f,counter,1);
     fclose(f);
 
     //print out to model.csv
-    model = fopen("./model.csv","w");
+    model = fopen("./model.csv","w"); //model is a global variable, because it is also used at 'print_csv' function
 	g_hash_table_foreach(counter, print_csv, 0x0) ;
     fclose(model);
 
-    // printf("%lf\n",(double)1/NEGATIVE);
     return 0;
 }
