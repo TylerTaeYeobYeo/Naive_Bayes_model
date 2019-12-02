@@ -2,8 +2,7 @@
 
 ### warning
 this project is ungoing. following processes will be adopted in the future.
-1. stopwords removal (such as 'a', 'an', 'the', and etc).
-2. probability fix(logarithm & smoothing)
+1. probability fix(logarithm & smoothing)
 
 quick build & use:
 ```
@@ -12,3 +11,11 @@ make
 ./trainer
 ./predictor
 ```
+
+### to set stopwords
+
+```
+cd lib
+vim stopwords
+```
+There is a file under 'lib' folder called 'stopwords'. To add or remove stopwords, eplease edit the contents of the file. To comment a line, please put '#' character at the start of the line.
