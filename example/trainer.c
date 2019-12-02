@@ -14,7 +14,7 @@ void print_csv (gpointer key, gpointer value, gpointer userdata)
 {
 	char * t = key ;
 	int * d = value ;
-    fprintf(model,"%s %0.32lf %0.32lf\n", t, (double)d[0]/NEGATIVE, (double)d[1]/NON_NEGATIVE);
+    fprintf(model,"%s %0.64lf %0.64lf\n", t, (double)d[0]/NEGATIVE, (double)d[1]/NON_NEGATIVE);
 	// printf("%s %lf %lf\n", t, (double)d[0]/Negative, (double)d[1]/nonNegative) ;
 }
 

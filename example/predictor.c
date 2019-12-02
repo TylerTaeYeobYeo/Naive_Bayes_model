@@ -80,7 +80,6 @@ int main(){
     readModel(fp,counter);
     fclose(fp);
 
-
     /* test negative datas*/
     fp = fopen("../data/test.negative.csv","r");
     int neg = testData(fp, counter, COMP);
