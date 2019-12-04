@@ -2,7 +2,7 @@
 
 ### warning
 this project is ungoing. following processes will be adopted in the future.
-1. probability fix(logarithm & smoothing)
+1. probability fix(logarithm - due to server problem it has been delayed)
 
 quick build & use:
 ```
