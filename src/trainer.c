@@ -10,7 +10,7 @@
  */
 #define NEGATIVE 9078
 #define NON_NEGATIVE 5565
-
+#define K 0
 FILE * model;
 GHashTable * stop; //stopwords
 
@@ -79,12 +79,12 @@ void read(FILE *f, GHashTable * counter, int index){
                     /* When smoothing, this is where you should MANIPULATE */
                     d = malloc(sizeof(int)*2) ;
                     if(index){ 
-                        d[0] = 0;
-                        d[1] = 1;
+                        d[0] = K + 0;
+                        d[1] = K + 1;
                     }
                     else{
-                        d[0] = 1;
-                        d[1] = 0;
+                        d[0] = K + 1;
+                        d[1] = K + 0;
                     }
                     g_hash_table_insert(counter, strdup(s), d);
                 }
