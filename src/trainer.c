@@ -11,6 +11,8 @@
 #define NEGATIVE 9078
 #define NON_NEGATIVE 5565
 #define K 0
+
+
 FILE * model;
 GHashTable * stop; //stopwords
 
@@ -18,7 +20,7 @@ void print_csv (gpointer key, gpointer value, gpointer userdata)
 {
 	char * t = key ;
 	int * d = value ;
-    fprintf(model,"%s %0.64lf %0.64lf\n", t, (double)d[0]/NEGATIVE, (double)d[1]/NON_NEGATIVE);
+    fprintf(model,"%s %0.80lf %0.80lf\n", t, (double)d[0]/(2*K + NEGATIVE), (double)d[1]/(2*K + NON_NEGATIVE));
 	// printf("%s %lf %lf\n", t, (double)d[0]/Negative, (double)d[1]/nonNegative) ;
 }
 

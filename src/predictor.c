@@ -3,6 +3,8 @@
 #include <string.h>
 #include <glib.h>
 #include "../include/libstemmer.h"
+#include <math.h>
+
 
 /* to change thresh hold, change this value*/
 #define COMP 0.5
@@ -41,6 +43,7 @@ int testData(FILE *f, GHashTable * counter, double thresh_hold){
         while (getline(&line, &n, f) >= 0) {
             char * t ;
             double s_m, m_s = 1, m_ns = 1;
+            double l_m_s = 0, l_m_ns = 0; //log
 
             for (t = strtok(line, " \n\t"); t != 0x0 ; t = strtok(0x0, " \n\t")) { 
                 /*pre-processing on word*/
@@ -61,9 +64,15 @@ int testData(FILE *f, GHashTable * counter, double thresh_hold){
                 if (d != NULL) {
                     m_s *= d[0];
                     m_ns *= d[1];
+                    // l_m_s += log(d[0]);
+                    // l_m_ns += log(d[1]);
                 }
             }
+            // m_s = exp(l_m_s);
+            // m_ns = exp(l_m_ns);
+
             s_m = m_s / (m_s + m_ns);
+
             if(s_m > thresh_hold) result++;
             line = 0x0;
         }
