@@ -61,14 +61,14 @@ int testData(FILE *f, GHashTable * counter, double thresh_hold){
                 /* look-up */
                 double * d = g_hash_table_lookup(counter, s) ;
                 if (d != NULL) {
-                    m_s *= d[0];
-                    m_ns *= d[1];
-                    // l_m_s += log(d[0]);
-                    // l_m_ns += log(d[1]);
+                    // m_s *= d[0];
+                    // m_ns *= d[1];
+                    l_m_s += log(d[0]);
+                    l_m_ns += log(d[1]);
                 }
             }
-            // m_s = exp(l_m_s);
-            // m_ns = exp(l_m_ns);
+            m_s = exp(l_m_s);
+            m_ns = exp(l_m_ns);
 
             s_m = m_s / (m_s + m_ns);
 
