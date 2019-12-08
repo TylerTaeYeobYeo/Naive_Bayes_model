@@ -1,6 +1,6 @@
 # Naive Bayes Model
 
-quick build & use:
+### quick build & use:
 ```
 cd example
 make
