@@ -5,6 +5,7 @@
 #include "../include/libstemmer.h"
 #include <math.h>
 
+
 /* to change thresh hold, change this value*/
 #define COMP 0.5
 
